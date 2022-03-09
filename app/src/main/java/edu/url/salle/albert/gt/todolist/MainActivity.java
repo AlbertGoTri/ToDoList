@@ -13,27 +13,33 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private TaskManager tm;
 
-    private RecyclerView mTaskRecyclerView;
-    private TaskAdapter mAdapter;
+    private RecyclerView TaskRecyclerView;
+    private TaskAdapter Adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        tm = new TaskManager();
 
-        mTaskRecyclerView = (RecyclerView)findViewById(R.id.task_recyler_view);
-        mTaskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        TaskRecyclerView = (RecyclerView)findViewById(R.id.task_recyler_view);
+        TaskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         updateUI();
     }
 
     private void updateUI() {
-        TaskLab taskLab = TaskLab.get(this);
-        List<Task> tasks = TaskLab.getTasks();
+        System.out.println("Gets to UI");
+        List<Task> tasks = tm.getTasks();
+        System.out.println("Tasks retrieved");
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println(tasks.get(i));
+        }
 
-        mAdapter = new TaskAdapter(tasks);
-        mTaskRecyclerView.setAdapter(mAdapter);
+        Adapter = new TaskAdapter(tasks);
+        TaskRecyclerView.setAdapter(Adapter);
     }
 
     // Adapter
@@ -69,20 +75,20 @@ public class MainActivity extends AppCompatActivity {
         private Task mTask;
 
         private TextView mTitleTextView;
-        private TextView mDateTextView;
+        private TextView StatusTextView;
 
         public TaskHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_task, parent, false));
             itemView.setOnClickListener(this);
 
             mTitleTextView = (TextView) itemView.findViewById(R.id.task_title);
-            mDateTextView = (TextView) itemView.findViewById(R.id.task_status);
+            StatusTextView = (TextView) itemView.findViewById(R.id.task_status);
         }
 
         public void bind(Task task) {
             mTask = task;
             mTitleTextView.setText(mTask.getTitle());
-            mDateTextView.setText(mTask.getDate().toString());
+            StatusTextView.setText(String.valueOf(mTask.getCompleted()));
         }
 
         @Override
